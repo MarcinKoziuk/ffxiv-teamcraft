@@ -2,16 +2,18 @@
 <html xmlns:og="http://ogp.me/ns#">
 <head>
   <title>FFXIV Teamcraft</title>
-  <meta name="description" content="Create crafting lists and collaborate with others, set gathering alarms, simulate crafting rotations, and more..."/>
+  <meta name="description"
+        content="Create crafting lists and collaborate with others, set gathering alarms, simulate crafting rotations, and more..."/>
   <meta charset="utf-8">
   <base href="/">
 
   <!-- Open Graph meta -->
   <meta property="og:title" content="FFXIV Teamcraft Beta"/>
-  <meta property="og:description" content="Create crafting lists and collaborate with others, set gathering alarms, simulate crafting rotations, and more..."/>
+  <meta property="og:description"
+        content="Create crafting lists and collaborate with others, set gathering alarms, simulate crafting rotations, and more..."/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://beta.ffxivteamcraft.com/"/>
-  <meta property="og:image" content="https://beta.ffxivteamcraft.com/assets/logo.png" />
+  <meta property="og:image" content="https://beta.ffxivteamcraft.com/assets/logo.png"/>
 
   <meta name="viewport" content="width=device-width,user-scalable=no">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -21,7 +23,11 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-104948571-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
     gtag('js', new Date());
     gtag('config', 'UA-104948571-1');
   </script>
@@ -55,6 +61,8 @@
   </script>
   <script src="https://www.garlandtools.org/bell/nodes.js"></script>
   <script src="https://www.garlandtools.org/bell/fish.js"></script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#292929">
 </head>
 <body>
 <app-root>
@@ -92,5 +100,6 @@
     document.getElementById('random-patron').innerText = randomPatron;
   </script>
 </app-root>
+<noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 </html>

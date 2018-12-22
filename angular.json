@@ -32,7 +32,8 @@
                 "glob": "**/*",
                 "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
                 "output": "/assets/"
-              }
+              },
+              "apps/client/src/manifest.json"
             ],
             "styles": [
               "apps/client/src/styles.less",
@@ -57,7 +58,8 @@
                   "replace": "apps/client/src/environments/environment.ts",
                   "with": "apps/client/src/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "serviceWorker": true
             },
             "electron": {
               "optimization": true,
@@ -130,7 +132,8 @@
             "scripts": [],
             "assets": [
               "apps/client/src/favicon.ico",
-              "apps/client/src/assets"
+              "apps/client/src/assets",
+              "apps/client/src/manifest.json"
             ]
           }
         },

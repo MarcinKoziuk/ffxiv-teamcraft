@@ -45,6 +45,7 @@ import { SimulatorModule } from './pages/simulator/simulator.module';
 import { TranslationsLoaderFactory } from './translations-loader';
 import { RotationsModule } from './modules/rotations/rotations.module';
 import { CustomLinksModule } from './modules/custom-links/custom-links.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 registerLocaleData(en);
 
@@ -137,7 +138,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
     }) : [],
     EffectsModule.forRoot([]),
     StoreModule.forFeature('auth', authReducer, { initialState: authInitialState }),
-    EffectsModule.forFeature([AuthEffects])
+    EffectsModule.forFeature([AuthEffects]),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   bootstrap: [AppComponent]
 })
