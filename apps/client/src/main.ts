@@ -12,14 +12,16 @@ import 'firebase/firestore';
 import 'firebase/messaging';
 import 'firebase/functions';
 
+const isCordovaApp = !!(<any>window).cordova;
+
 if (environment.production) {
   enableProdMode();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener(isCordovaApp ? 'deviceready' : 'DOMContentLoaded', () => {
   platformBrowserDynamic().bootstrapModule(AppModule).then((module) => {
-  const applicationRef = module.injector.get(ApplicationRef);
-  const appComponent = applicationRef.components[0];
-  enableDebugTools(appComponent);
-});
+    const applicationRef = module.injector.get(ApplicationRef);
+    const appComponent = applicationRef.components[0];
+    enableDebugTools(appComponent);
+  });
 });

@@ -10,7 +10,7 @@ import { NgSerializerModule } from '@kaiu/ng-serializer';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgDragDropModule } from 'ng-drag-drop';
-import { IS_ELECTRON, PlatformService } from './core/tools/platform.service';
+import { IS_CORDOVA, IS_ELECTRON, PlatformService } from './core/tools/platform.service';
 import { AppRoutingModule } from './app-routing.module';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -97,7 +97,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
 
     XivapiClientModule.forRoot('63cc0045d7e847149c3f'),
 
-    RouterModule.forRoot([], { useHash: IS_ELECTRON }),
+    RouterModule.forRoot([], { useHash: IS_ELECTRON || IS_CORDOVA }),
 
     AppRoutingModule,
     AuthModule,

@@ -11,7 +11,8 @@ export class TranslationsLoader implements TranslateLoader {
   }
 
   getTranslation(lang: string): Observable<any> {
-    return this.http.get(`${this.platformService.isDesktop() ? '.' : ''}/assets/i18n/${this.getFilename(lang)}.json`).pipe(shareReplay(1));
+    return this.http.get(`${this.platformService.isDesktop() || this.platformService.isMobileApp() ? '.' : ''
+    }/assets/i18n/${this.getFilename(lang)}.json`).pipe(shareReplay(1));
   }
 
   getFilename(lang: string): string {
