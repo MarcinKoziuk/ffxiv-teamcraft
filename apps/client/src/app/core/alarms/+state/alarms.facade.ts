@@ -154,6 +154,9 @@ export class AlarmsFacade {
     display.remainingTime = this.etime.toEarthTime(display.remainingTime);
     display.nextSpawn = nextSpawn;
     display.weather = nextSpawn.weather;
+    const spawnAfter = { ...this.getNextSpawn(alarm, new Date(nextSpawn.closeDate), true) };
+    spawnAfter.days += nextSpawn.days;
+    display.timeBeforeSpawnAfterNextOne = this.getMinutesBefore(date, spawnAfter);
     return display;
   }
 
@@ -217,8 +220,8 @@ export class AlarmsFacade {
     return this.getMinutesBefore(time, this.getNextSpawn(alarm, time)) < this.settings.alarmHoursBefore * 60;
   }
 
-  public getNextSpawn(alarm: Alarm, time: Date): NextSpawn {
-    const cacheKey = `${alarm.itemId}-${alarm.zoneId}-${(alarm.spawns || []).join(',')}`;
+  public getNextSpawn(alarm: Alarm, time: Date, next = false): NextSpawn {
+    const cacheKey = `${alarm.itemId}-${alarm.zoneId}-${(alarm.spawns || []).join(',')}-${next ? 'n' : ''}`;
     if (this.nextSpawnCache[cacheKey] === undefined || this.nextSpawnCache[cacheKey].expires.getTime() < Date.now()) {
       const sortedSpawns = (alarm.spawns || []).sort((a, b) => {
         const timeBeforeA = this.getMinutesBefore(time, { hours: a, days: 0 });
@@ -241,11 +244,14 @@ export class AlarmsFacade {
           expires: this.etime.toEarthDate(time)
         };
       } else {
+        const closeDate = new Date(time.getTime() + alarm.duration * 86400000);
+        closeDate.setUTCMinutes(0);
         this.nextSpawnCache[cacheKey] = {
           spawn: {
             hours: sortedSpawns[0],
-            days: 0,
-            despawn: (sortedSpawns[0] + alarm.duration) % 24
+            days: Math.max(Math.floor((time.getTime() - this.etime.toEorzeanDate(new Date()).getTime()) / 86400000), 0),
+            despawn: (sortedSpawns[0] + alarm.duration) % 24,
+            closeDate: closeDate
           },
           expires: new Date()
         };
@@ -276,7 +282,13 @@ export class AlarmsFacade {
           if (weatherStart < despawn && weatherStart >= spawn) {
             // If it spawns during the alarm spawn, return weather spawn time.
             const days = Math.max(Math.floor((weatherSpawn.spawn.getTime() - time) / 86400000), 0);
-            return { hours: weatherStart, days: days, despawn: despawn, weather: weatherSpawn.weather };
+            return {
+              hours: weatherStart,
+              days: days,
+              despawn: despawn,
+              weather: weatherSpawn.weather,
+              closeDate: new Date(this.weatherService.nextWeatherTime(weatherSpawn.spawn.getTime()))
+            };
           } else if (weatherStart < spawn && weatherStop > spawn) {
             // If it spawns before the alarm and despawns during the alarm or after,
             // set spawn day hour to spawn hour for days math.
@@ -287,7 +299,8 @@ export class AlarmsFacade {
               hours: spawn,
               days: days,
               despawn: Math.min(weatherStop, despawn || 24),
-              weather: weatherSpawn.weather
+              weather: weatherSpawn.weather,
+              closeDate: new Date(this.weatherService.nextWeatherTime(weatherSpawn.spawn.getTime()))
             };
           }
         } else {
@@ -298,7 +311,13 @@ export class AlarmsFacade {
           if (base48WeatherStart < base48Despawn && base48WeatherStart >= base48Spawn) {
             // If it spawns during the alarm spawn, return weather spawn time.
             const days = Math.max(Math.floor((weatherSpawn.spawn.getTime() - time) / 86400000), 0);
-            return { hours: weatherStart, days: days, despawn: despawn, weather: weatherSpawn.weather };
+            return {
+              hours: weatherStart,
+              days: days,
+              despawn: despawn,
+              weather: weatherSpawn.weather,
+              closeDate: new Date(this.weatherService.nextWeatherTime(weatherSpawn.spawn.getTime()))
+            };
           } else if (base48WeatherStart < base48Spawn && base48WeatherStop > base48Spawn) {
             // If it spawns before the alarm and despawns during the alarm or after,
             // set spawn day hour to spawn hour for days math.
@@ -309,7 +328,8 @@ export class AlarmsFacade {
               hours: spawn,
               days: days,
               despawn: Math.min(weatherStop, despawn || 24),
-              weather: weatherSpawn.weather
+              weather: weatherSpawn.weather,
+              closeDate: new Date(this.weatherService.nextWeatherTime(weatherSpawn.spawn.getTime()))
             };
           }
         }
@@ -322,7 +342,8 @@ export class AlarmsFacade {
         hours: weatherSpawn.spawn.getUTCHours(),
         days: days,
         despawn: new Date(this.weatherService.nextWeatherTime(weatherSpawn.spawn.getTime())).getUTCHours() || 24,
-        weather: weatherSpawn.weather
+        weather: weatherSpawn.weather,
+        closeDate: new Date(this.weatherService.nextWeatherTime(weatherSpawn.spawn.getTime()))
       };
     }
     return this.findWeatherSpawnCombination(alarm, sortedSpawns, time, this.weatherService.nextWeatherTime(weatherSpawns[0].spawn.getTime()));

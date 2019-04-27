@@ -30,6 +30,11 @@ export class AlarmDisplay {
   nextSpawn: NextSpawn;
 
   /**
+   * Next spawn for the ingame alarm macro generator.
+   */
+  timeBeforeSpawnAfterNextOne: number;
+
+  /**
    * Is the alarm registered in store?
    */
   registered?: boolean;

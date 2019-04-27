@@ -170,7 +170,10 @@
       } | async)?.nameid | placeName | i18n}}
       </div>
       <div fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="5px">
-        <div>{{row.remainingTime | timer}}</div>
+        <div fxLayout="column">
+          <div class="main-timer">{{row.remainingTime | timer}}</div>
+          <div class="nex-timer">{{row.timeBeforeSpawnAfterNextOne | timer}}</div>
+        </div>
         <div *ngIf="row.alarm.nodeContent" nz-popover
              [nzTitle]="'ALARMS.Node_content' | translate"
              [nzContent]="nodeContent">
